@@ -22,6 +22,7 @@ import android.widget.Toast;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.List;
 
 import javax.net.ssl.HttpsURLConnection;
 
@@ -43,80 +44,7 @@ public class MainActivity extends AppCompatActivity {
     private final String TRIVIA = "trivia";
     private final String JSON = "json";
 
-    private RecyclerView.Adapter adapter = new RecyclerView.Adapter() {
-
-        private ArrayList<NumbersData> arrayList;
-        private Context context;
-
-        public void setArrayList(ArrayList arrayList){
-            this.arrayList = arrayList;
-        }
-
-        public void setContext(Context context){
-            this.context = context;
-        }
-
-        @Override
-        public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-
-            View view = LayoutInflater.from(context).inflate(R.layout.list_item,parent,false);
-
-            return new NumberViewHolder(view);
-        }
-
-        @Override
-        public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
-
-            NumberViewHolder numberViewHolder= (NumberViewHolder) holder;
-            numberViewHolder.bind(position);
-
-        }
-
-        @Override
-        public int getItemCount() {
-            return arrayList.size();
-        }
-
-
-        class NumberViewHolder extends RecyclerView.ViewHolder{
-
-            private TextView numberTextView;
-            private TextView numberDataTextView;
-            private TextView idTextView;
-
-            public NumberViewHolder(View itemView) {
-                super(itemView);
-
-                numberTextView = itemView.findViewById(R.id.number);
-                numberDataTextView = itemView.findViewById(R.id.number_text);
-                idTextView = itemView.findViewById(R.id.number_id);
-            }
-
-            public void bind(int pos){
-                numberTextView.setText(arrayList.get(pos).getNumber());
-                numberDataTextView.setText(arrayList.get(pos).getText());
-                idTextView.setText(arrayList.get(pos).getNumber_id()+1+"");
-
-            }
-
-        }
-
-    };
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+    private NumbersAdapter numbersAdapter;
 
 
 
@@ -130,23 +58,29 @@ public class MainActivity extends AppCompatActivity {
         maxInput = findViewById(R.id.max_field);
 
         numbersDataArrayList = new ArrayList<>();
+        numbersAdapter = new NumbersAdapter(numbersDataArrayList,getApplicationContext());
 
         numbersViewModel = ViewModelProviders.of(this).get(NumbersViewModel.class);
+        numbersViewModel.createReporsitory(getApplicationContext());
+        final TextView textView = findViewById(R.id.answer);
 
-        Observer<ArrayList<NumbersData>> arrayListObserver = new Observer<ArrayList<NumbersData>>() {
+        Observer<List<NumbersData>> arrayListObserver = new Observer<List<NumbersData>>() {
             @Override
-            public void onChanged(@Nullable ArrayList<NumbersData> numbersData) {
+            public void onChanged(@Nullable List<NumbersData> numbersData) {
                 if(numbersData!=null){
-                    numbersDataArrayList = numbersData;
+                    numbersDataArrayList = (ArrayList<NumbersData>) numbersData;
+                    numbersAdapter.setArrayList((ArrayList) numbersData);
+                    textView.setText(numbersData.toString());
                 }
+                numbersAdapter.notifyDataSetChanged();
+
                 Log.d(TAG, "onChanged: "+numbersDataArrayList.toString());
             }
         };
-        numbersViewModel.getListLiveData().observe(this,arrayListObserver);
-
+        numbersViewModel.getNumbersInfoLiveData().observe(this,arrayListObserver);
 
         RecyclerView recyclerView = findViewById(R.id.recyclerView);
-
+        recyclerView.setAdapter(numbersAdapter);
 
     }
 

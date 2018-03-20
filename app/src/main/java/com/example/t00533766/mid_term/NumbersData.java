@@ -46,4 +46,9 @@ public class NumbersData {
     public void setText(String text) {
         this.text = text;
     }
+
+    @Override
+    public String toString() {
+        return number+"  "+text+'\n';
+    }
 }

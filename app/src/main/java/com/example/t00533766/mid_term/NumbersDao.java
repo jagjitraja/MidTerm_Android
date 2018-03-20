@@ -8,6 +8,7 @@ import android.arch.persistence.room.Query;
 import android.arch.persistence.room.Update;
 
 import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created by T00533766 on 3/19/2018.
@@ -20,13 +21,8 @@ public interface NumbersDao {
     public  void insertData(NumbersData numbersData);
 
     @Query("SELECT * FROM NumbersData")
-    public  LiveData<ArrayList<NumbersData>> getAllData();
+    public  LiveData<List<NumbersData>> getAllData();
 
-    @Delete
-    public  void deleteData(NumbersData numbersData);
-
-    @Update
-    public  void updateData(NumbersData numbersData);
 
 
 }

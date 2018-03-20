@@ -5,12 +5,17 @@ import android.content.Intent;
 import android.support.annotation.Nullable;
 import android.util.Log;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.util.ArrayList;
+import java.util.Iterator;
 
 import javax.net.ssl.HttpsURLConnection;
 
@@ -19,6 +24,7 @@ import javax.net.ssl.HttpsURLConnection;
  */
 
 public class NumbersService extends IntentService {
+
     public NumbersService() {
         super("NumbersService");
     }
@@ -29,7 +35,10 @@ public class NumbersService extends IntentService {
     @Override
     protected void onHandleIntent(@Nullable Intent intent) {
 
-        URL url = (URL) intent.getSerializableExtra("URL");
+        URL url = null;
+        if (intent != null) {
+            url = (URL) intent.getSerializableExtra("URL");
+        }
 
         Log.d(url+"", "onHandleIntent: ");
 
@@ -60,6 +69,34 @@ public class NumbersService extends IntentService {
     }
 
     private void parse(String JSON){
+
+        NumbersRepository numbersRepository = new NumbersRepository(getApplicationContext());
+
+        ArrayList<NumbersData> numbersDataArrayList = new ArrayList<>();
+
+        int i = 1;
+        try {
+            JSONObject jsonObject = new JSONObject(JSON);
+
+            Iterator<String> iter = jsonObject.keys();
+            while (iter.hasNext()) {
+                String key = iter.next();
+                JSONObject value = jsonObject.getJSONObject(key);
+
+                String num = value.getString(Utils.NUMBER);
+                String text = value.getString(Utils.TEXT);
+                NumbersData numbersData = new NumbersData(text,num);
+                numbersDataArrayList.add(numbersData);
+
+                numbersRepository.insertGuestInfo(numbersData);
+            }
+
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+
+        Log.d(numbersDataArrayList.size()+"{", "parse: ");
+
 
     }
 
