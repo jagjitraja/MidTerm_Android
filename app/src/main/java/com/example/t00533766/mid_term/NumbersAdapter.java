@@ -29,9 +29,6 @@ public class NumbersAdapter extends RecyclerView.Adapter {
         this.arrayList = arrayList;
     }
 
-    public void setContext(Context context) {
-        this.context = context;
-    }
 
     @Override
     public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {

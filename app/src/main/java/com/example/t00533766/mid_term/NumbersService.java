@@ -73,10 +73,21 @@ public class NumbersService extends IntentService {
         NumbersRepository numbersRepository = new NumbersRepository(getApplicationContext());
 
         ArrayList<NumbersData> numbersDataArrayList = new ArrayList<>();
+        ArrayList<NumbersData> exisitingData = (ArrayList<NumbersData>) numbersRepository.getAllGuestInfo().getValue();
 
         int i = 1;
         try {
             JSONObject jsonObject = new JSONObject(JSON);
+
+            try {
+                String num = jsonObject.getString(Utils.NUMBER);
+                String text = jsonObject.getString(Utils.TEXT);
+                NumbersData numbersData = new NumbersData(text,num);
+                numbersDataArrayList.add(numbersData);
+                numbersRepository.insertGuestInfo(numbersData);
+            }catch (Exception c){
+
+            }
 
             Iterator<String> iter = jsonObject.keys();
             while (iter.hasNext()) {
@@ -87,7 +98,6 @@ public class NumbersService extends IntentService {
                 String text = value.getString(Utils.TEXT);
                 NumbersData numbersData = new NumbersData(text,num);
                 numbersDataArrayList.add(numbersData);
-
                 numbersRepository.insertGuestInfo(numbersData);
             }
 

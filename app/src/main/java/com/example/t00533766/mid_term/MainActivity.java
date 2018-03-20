@@ -9,6 +9,7 @@ import android.net.Uri;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -62,7 +63,14 @@ public class MainActivity extends AppCompatActivity {
 
         numbersViewModel = ViewModelProviders.of(this).get(NumbersViewModel.class);
         numbersViewModel.createReporsitory(getApplicationContext());
-        final TextView textView = findViewById(R.id.answer);
+
+
+
+
+        RecyclerView recyclerView = findViewById(R.id.recyclerView);
+        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getApplicationContext());
+        recyclerView.setLayoutManager(linearLayoutManager);
+        recyclerView.setAdapter(numbersAdapter);
 
         Observer<List<NumbersData>> arrayListObserver = new Observer<List<NumbersData>>() {
             @Override
@@ -70,7 +78,7 @@ public class MainActivity extends AppCompatActivity {
                 if(numbersData!=null){
                     numbersDataArrayList = (ArrayList<NumbersData>) numbersData;
                     numbersAdapter.setArrayList((ArrayList) numbersData);
-                    textView.setText(numbersData.toString());
+                   // textView.setText(numbersData.toString());
                 }
                 numbersAdapter.notifyDataSetChanged();
 
@@ -78,9 +86,6 @@ public class MainActivity extends AppCompatActivity {
             }
         };
         numbersViewModel.getNumbersInfoLiveData().observe(this,arrayListObserver);
-
-        RecyclerView recyclerView = findViewById(R.id.recyclerView);
-        recyclerView.setAdapter(numbersAdapter);
 
     }
 

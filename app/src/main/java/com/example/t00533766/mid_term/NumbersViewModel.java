@@ -30,9 +30,5 @@ public class NumbersViewModel extends ViewModel {
         return repository.getAllGuestInfo();
     }
 
-    public void insertNumbersData(NumbersData numbersData){
-        repository.insertGuestInfo(numbersData);
-    }
-
 
 }
