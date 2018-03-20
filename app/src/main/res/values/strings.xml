@@ -1,0 +1,7 @@
+<resources>
+    <string name="app_name">Mid_Term</string>
+    <string name="math">Math</string>
+    <string name="trivia">Trivia</string>
+    <string name="min">Min</string>
+    <string name="max">Max</string>
+</resources>
